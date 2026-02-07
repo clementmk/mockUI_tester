@@ -373,28 +373,29 @@
                         <div class="space-y-6">
                             <div>
                                 <label class="block mb-2 font-semibold">Test Name</label>
-                                <input type="text" placeholder="e.g., Mobile Signup Flow - iOS" required>
+                                <input id="new-test-form-test-name" type="text" placeholder="e.g., Mobile Signup Flow - iOS" required>
                             </div>
 
                             <div>
                                 <label class="block mb-2 font-semibold">Target URL</label>
-                                <input type="url" placeholder="https://staging.example.com" required>
+                                <input id="new-test-form-url" type="url" placeholder="https://staging.example.com" required>
                             </div>
 
                             <div>
                                 <label class="block mb-2 font-semibold">Test Scenario</label>
-                                <select required>
+                                <select id="new-test-form-scenario" required>
                                     <option value="">Select a test scenario...</option>
                                     <option value="signup">Complete Signup Flow</option>
-                                    <option value="login">Login Flow</option>
-                                    <option value="document-upload">Document Upload</option>
-                                    <option value="profile-creation">Profile Creation</option>
-                                    <option value="checkout">Checkout Process</option>
-                                    <option value="custom">Custom Flow</option>
+                                    <option value="login">Login Flow with Recaptcha</option>
+                                    <option value="forget-password">Forget Password</option>
+                                    <!-- <option value="document-upload">Document Upload</option> -->
+                                    <!-- <option value="profile-creation">Profile Creation</option> -->
+                                    <!-- <option value="checkout">Checkout Process</option> -->
+                                    <!-- <option value="custom">Custom Flow</option> -->
                                 </select>
                             </div>
 
-                            <div>
+                            <!-- <div>
                                 <label class="block mb-2 font-semibold">Device Configuration</label>
                                 <div class="grid grid-cols-2 gap-4">
                                     <select required>
@@ -434,9 +435,9 @@
                                     <option value="zh-CN">Chinese</option>
                                     <option value="ja-JP">Japanese</option>
                                 </select>
-                            </div>
+                            </div> -->
 
-                            <div>
+                            <!-- <div>
                                 <label class="block mb-2 font-semibold">User Persona</label>
                                 <select>
                                     <option value="confused">Confused First-Timer</option>
@@ -444,9 +445,9 @@
                                     <option value="impatient">Impatient User</option>
                                     <option value="thorough">Thorough User</option>
                                 </select>
-                            </div>
+                            </div> -->
 
-                            <div>
+                            <!-- <div>
                                 <label class="block mb-2 font-semibold">Alert Destination</label>
                                 <div class="grid grid-cols-2 gap-4">
                                     <select>
@@ -456,7 +457,7 @@
                                     </select>
                                     <input type="text" placeholder="Channel/Email">
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="flex gap-4">
                                 <button type="submit" class="btn-primary flex-1">
@@ -814,5 +815,6 @@
     </div>
 
     <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/tests.js"></script>
 </body>
 </html>
