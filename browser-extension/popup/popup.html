@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUTO - Quick Test</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="popup-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <span class="logo-icon">◉</span>
+                <span class="logo-text">AUTO</span>
+            </div>
+            <button class="btn-icon" id="openDashboard" title="Open Dashboard">
+                🎯
+            </button>
+        </div>
+
+        <!-- Quick Test Section -->
+        <div class="section">
+            <h3 class="section-title">🚀 Quick Test</h3>
+            <div class="quick-actions">
+                <button class="btn-scenario" data-scenario="signup">
+                    <span class="emoji">📱</span>
+                    <span class="text">Signup Flow</span>
+                </button>
+                <button class="btn-scenario" data-scenario="login">
+                    <span class="emoji">🔐</span>
+                    <span class="text">Login Flow</span>
+                </button>
+                <button class="btn-scenario" data-scenario="upload">
+                    <span class="emoji">📄</span>
+                    <span class="text">Doc Upload</span>
+                </button>
+                <button class="btn-scenario" data-scenario="checkout">
+                    <span class="emoji">🛒</span>
+                    <span class="text">Checkout</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Recent Tests -->
+        <div class="section">
+            <div class="section-header">
+                <h3 class="section-title">Recent Tests</h3>
+                <span class="badge" id="testCount">0</span>
+            </div>
+            <div id="recentTests" class="recent-tests">
+                <div class="empty-state">
+                    <span class="emoji">📊</span>
+                    <p>No tests yet</p>
+                    <small>Start a test to see it here</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <button class="btn-primary" id="customTest">
+                <span>+ Custom Test</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

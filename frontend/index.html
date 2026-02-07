@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naming - Autonomous Mystery Shopper</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Epilogue:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Background -->
+    <div class="grid-bg"></div>
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+
+    <div class="content-wrapper">
+        <!-- Navigation -->
+        <nav>
+            <div class="max-w-7xl mx-auto px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="logo">
+                        <span>AUto</span>
+                    </div>
+                    <div class="nav-links flex gap-2">
+                        <a href="#" class="nav-link active" data-tab="dashboard">Dashboard</a>
+                        <a href="#" class="nav-link" data-tab="new-test">New Test</a>
+                        <a href="#" class="nav-link" data-tab="history">View History</a>
+                        <a href="#" class="nav-link" data-tab="scenarios">Test Scenarios</a>
+                    </div>
+                    <button class="btn-primary" onclick="showQuickTestModal()">
+                        <span style="position: relative; z-index: 1;"> Quick Test</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-6 py-8">
+            <!-- Dashboard View -->
+            <div id="dashboard-view" class="view">
+                <div class="mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h1 class="text-4xl font-bold mb-2" style="font-family: 'Space Mono', monospace;">
+                                Autonomous Mystery Shopper
+                            </h1>
+                            <p class="text-lg" style="color: var(--text-muted);">
+                                AI-powered UI/UX testing 
+                            </p>
+                        </div>
+                        <button class="btn-secondary hide-in-pdf" onclick="exportDashboard()" style="white-space: nowrap;">
+                            📄 Export Dashboard
+                        </button>
+                    </div>
+                    
+                    <!-- Time Filter -->
+                    <div class="flex gap-3 mb-4 hide-in-pdf">
+                        <button class="time-filter active" onclick="filterByTime('7days')" data-filter="7days">
+                            Last 7 Days
+                        </button>
+                        <button class="time-filter" onclick="filterByTime('30days')" data-filter="30days">
+                            Last 30 Days
+                        </button>
+                        <button class="time-filter" onclick="filterByTime('alltime')" data-filter="alltime">
+                            All Time
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="card">
+                        <div class="text-sm" style="color: var(--text-muted); margin-bottom: 0.5rem;">Total Tests</div>
+                        <div class="text-3xl font-bold" style="color: var(--primary);">127</div>
+                    </div>
+                    <div class="card">
+                        <div class="text-sm" style="color: var(--text-muted); margin-bottom: 0.5rem;">Issues Found</div>
+                        <div class="text-3xl font-bold" style="color: var(--error);">43</div>
+                    </div>
+                    <div class="card">
+                        <div class="text-sm" style="color: var(--text-muted); margin-bottom: 0.5rem;">Success Rate</div>
+                        <div class="text-3xl font-bold" style="color: var(--success);">87%</div>
+                    </div>
+                    <div class="card">
+                        <div class="text-sm" style="color: var(--text-muted); margin-bottom: 0.5rem;">Avg Duration</div>
+                        <div class="text-3xl font-bold" style="color: var(--secondary);">2.4m</div>
+                    </div>
+                </div>
+
+                <!-- Two Column Layout: Recent Tests & Most Run Tests -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Recent Tests -->
+                    <div class="card">
+                        <h2 class="text-xl font-bold mb-4">Recent Test Runs</h2>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-4 rounded-lg" style="background: var(--surface-light);">
+                                <div class="flex items-center gap-4 flex-1 min-w-0">
+                                    <div class="status-badge status-running">Running</div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="font-semibold truncate">Mobile Signup Flow - iOS Safari</div>
+                                        <div class="text-sm" style="color: var(--text-muted);">Started 2 minutes ago</div>
+                                    </div>
+                                </div>
+                                <button class="btn-secondary" onclick="viewTestDetails('test-1')" style="white-space: nowrap;">View</button>
+                            </div>
+                            <div class="flex items-center justify-between p-4 rounded-lg" style="background: var(--surface-light);">
+                                <div class="flex items-center gap-4 flex-1 min-w-0">
+                                    <div class="status-badge status-failed">Failed</div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="font-semibold truncate">Document Upload - Android Chrome</div>
+                                        <div class="text-sm" style="color: var(--text-muted);">Completed 15 min ago • 3 issues</div>
+                                    </div>
+                                </div>
+                                <button class="btn-secondary" onclick="viewTestDetails('test-2')" style="white-space: nowrap;">View</button>
+                            </div>
+                            <div class="flex items-center justify-between p-4 rounded-lg" style="background: var(--surface-light);">
+                                <div class="flex items-center gap-4 flex-1 min-w-0">
+                                    <div class="status-badge status-passed">Passed</div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="font-semibold truncate">Login Flow - Desktop Chrome</div>
+                                        <div class="text-sm" style="color: var(--text-muted);">Completed 1 hour ago</div>
+                                    </div>
+                                </div>
+                                <button class="btn-secondary" onclick="viewTestDetails('test-3')" style="white-space: nowrap;">View</button>
+                            </div>
+                            <div class="flex items-center justify-between p-4 rounded-lg" style="background: var(--surface-light);">
+                                <div class="flex items-center gap-4 flex-1 min-w-0">
+                                    <div class="status-badge status-passed">Passed</div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="font-semibold truncate">Profile Creation - Mobile Safari</div>
+                                        <div class="text-sm" style="color: var(--text-muted);">Completed 2 hours ago</div>
+                                    </div>
+                                </div>
+                                <button class="btn-secondary" onclick="viewTestDetails('test-4')" style="white-space: nowrap;">View</button>
+                            </div>
+                            <div class="flex items-center justify-between p-4 rounded-lg" style="background: var(--surface-light);">
+                                <div class="flex items-center gap-4 flex-1 min-w-0">
+                                    <div class="status-badge status-failed">Failed</div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="font-semibold truncate">Checkout Flow - Slow 3G Network</div>
+                                        <div class="text-sm" style="color: var(--text-muted);">Completed 3 hours ago • 2 issues</div>
+                                    </div>
+                                </div>
+                                <button class="btn-secondary" onclick="viewTestDetails('test-5')" style="white-space: nowrap;">View</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Most Run Tests -->
+                    <div class="card">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl font-bold">🔥 Most Run Tests</h2>
+                            <span class="text-sm" style="color: var(--text-muted);">Last 7 days</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-4 rounded-lg" style="background: var(--surface-light);">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span style="font-size: 1.5rem;">📱</span>
+                                        <div class="font-semibold truncate">Mobile Signup - iOS Safari</div>
+                                    </div>
+                                    <div class="text-sm" style="color: var(--text-muted);">47 total runs • 89% pass rate</div>
+                                </div>
+                                <button class="btn-secondary" onclick="rerunTest('popular-1')" style="white-space: nowrap;">▶ Run</button>
+                            </div>
+                            <div class="flex items-center justify-between p-4 rounded-lg" style="background: var(--surface-light);">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span style="font-size: 1.5rem;">📄</span>
+                                        <div class="font-semibold truncate">Document Upload - Android</div>
+                                    </div>
+                                    <div class="text-sm" style="color: var(--text-muted);">32 total runs • 78% pass rate</div>
+                                </div>
+                                <button class="btn-secondary" onclick="rerunTest('popular-2')" style="white-space: nowrap;">▶ Run</button>
+                            </div>
+                            <div class="flex items-center justify-between p-4 rounded-lg" style="background: var(--surface-light);">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span style="font-size: 1.5rem;">🔐</span>
+                                        <div class="font-semibold truncate">Login Flow - Desktop Chrome</div>
+                                    </div>
+                                    <div class="text-sm" style="color: var(--text-muted);">28 total runs • 93% pass rate</div>
+                                </div>
+                                <button class="btn-secondary" onclick="rerunTest('popular-3')" style="white-space: nowrap;">▶ Run</button>
+                            </div>
+                            <div class="flex items-center justify-between p-4 rounded-lg" style="background: var(--surface-light);">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span style="font-size: 1.5rem;">🛒</span>
+                                        <div class="font-semibold truncate">Checkout Process - Mobile</div>
+                                    </div>
+                                    <div class="text-sm" style="color: var(--text-muted);">24 total runs • 83% pass rate</div>
+                                </div>
+                                <button class="btn-secondary" onclick="rerunTest('popular-4')" style="white-space: nowrap;">▶ Run</button>
+                            </div>
+                            <div class="flex items-center justify-between p-4 rounded-lg" style="background: var(--surface-light);">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span style="font-size: 1.5rem;">👤</span>
+                                        <div class="font-semibold truncate">Profile Creation Flow</div>
+                                    </div>
+                                    <div class="text-sm" style="color: var(--text-muted);">21 total runs • 95% pass rate</div>
+                                </div>
+                                <button class="btn-secondary" onclick="rerunTest('popular-5')" style="white-space: nowrap;">▶ Run</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Insights -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="card">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div style="font-size: 2rem;">⚠️</div>
+                            <div>
+                                <div class="text-sm" style="color: var(--text-muted);">Active Critical Issues</div>
+                                <div class="text-2xl font-bold" style="color: var(--error);">2</div>
+                            </div>
+                        </div>
+                        <p class="text-sm" style="color: var(--text-muted);">Requires immediate attention</p>
+                        <button class="btn-secondary mt-3" onclick="switchTab('history')" style="width: 100%; font-size: 0.875rem;">View Issues</button>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div style="font-size: 2rem;">📊</div>
+                            <div>
+                                <div class="text-sm" style="color: var(--text-muted);">This Week's Tests</div>
+                                <div class="text-2xl font-bold" style="color: var(--secondary);">34</div>
+                            </div>
+                        </div>
+                        <p class="text-sm" style="color: var(--text-muted);">+12% from last week</p>
+                        <button class="btn-secondary mt-3" onclick="switchTab('history')" style="width: 100%; font-size: 0.875rem;">View History</button>
+                    </div>
+                    
+                    <div class="card" style="background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 136, 255, 0.1)); border-color: rgba(0, 255, 136, 0.3);">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div style="font-size: 2rem;">🚀</div>
+                            <div>
+                                <div class="text-sm font-semibold" style="color: var(--primary);">Quick Start</div>
+                                <div class="text-sm" style="color: var(--text-muted); margin-top: 0.25rem;">Run a new test</div>
+                            </div>
+                        </div>
+                        <button class="btn-primary mt-3" onclick="showNewTestModal()" style="width: 100%; font-size: 0.875rem;">
+                            <span style="position: relative; z-index: 1;">+ New Test</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Analytics Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Test Trend Over Time -->
+                    <div class="card lg:col-span-2">
+                        <h2 class="text-xl font-bold mb-4">Test Trend Over Time</h2>
+                        <canvas id="testTrendChart" style="max-height: 300px;"></canvas>
+                    </div>
+                    
+                    <!-- Issue Severity Breakdown -->
+                    <div class="card">
+                        <h2 class="text-xl font-bold mb-4">Issue Severity</h2>
+                        <canvas id="severityChart" style="max-height: 300px;"></canvas>
+                        <div class="mt-4 space-y-2 text-sm">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div style="width: 12px; height: 12px; background: #e60404; border-radius: 50%;"></div>
+                                    <span>P0 - Critical</span>
+                                </div>
+                                <span class="font-bold">5</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div style="width: 12px; height: 12px; background: #f59e0b; border-radius: 50%;"></div>
+                                    <span>P1 - High</span>
+                                </div>
+                                <span class="font-bold">12</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div style="width: 12px; height: 12px; background: #1c70dc; border-radius: 50%;"></div>
+                                    <span>P2 - Medium</span>
+                                </div>
+                                <span class="font-bold">18</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div style="width: 12px; height: 12px; background: #07dc47; border-radius: 50%;"></div>
+                                    <span>P3 - Low</span>
+                                </div>
+                                <span class="font-bold">8</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Device Breakdown -->
+                <div class="card mb-8">
+                    <h2 class="text-xl font-bold mb-4">Device & Platform Distribution</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <canvas id="deviceChart" style="max-height: 250px;"></canvas>
+                        </div>
+                        <div class="flex flex-col justify-center space-y-3">
+                            <div class="flex items-center justify-between p-3 rounded-lg" style="background: var(--surface-light);">
+                                <div class="flex items-center gap-3">
+                                    <div style="width: 16px; height: 16px; background: #00ff88; border-radius: 50%;"></div>
+                                    <span class="font-semibold">📱 Mobile</span>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold" style="color: var(--primary);">67 tests</div>
+                                    <div class="text-sm" style="color: var(--text-muted);">52.8%</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-lg" style="background: var(--surface-light);">
+                                <div class="flex items-center gap-3">
+                                    <div style="width: 16px; height: 16px; background: #0088ff; border-radius: 50%;"></div>
+                                    <span class="font-semibold">💻 Desktop</span>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold" style="color: var(--secondary);">48 tests</div>
+                                    <div class="text-sm" style="color: var(--text-muted);">37.8%</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-lg" style="background: var(--surface-light);">
+                                <div class="flex items-center gap-3">
+                                    <div style="width: 16px; height: 16px; background: #a855f7; border-radius: 50%;"></div>
+                                    <span class="font-semibold">📱 Tablet</span>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold" style="color: var(--accent);">12 tests</div>
+                                    <div class="text-sm" style="color: var(--text-muted);">9.4%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trust Indicators / Value Propositions -->
+                <div class="card" style="background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 136, 255, 0.05)); border-color: rgba(0, 255, 136, 0.2);">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                        <div>
+                            <div class="text-3xl mb-2">⚡</div>
+                            <div class="font-bold mb-1" style="color: var(--primary);">Lightning Fast</div>
+                            <p class="text-sm" style="color: var(--text-muted);">Tests complete in minutes, not hours</p>
+                        </div>
+                        <div>
+                            <div class="text-3xl mb-2">🛡️</div>
+                            <div class="font-bold mb-1" style="color: var(--primary);">Trustworthy Results</div>
+                            <p class="text-sm" style="color: var(--text-muted);">AI-powered accuracy you can rely on</p>
+                        </div>
+                        <div>
+                            <div class="text-3xl mb-2">🎯</div>
+                            <div class="font-bold mb-1" style="color: var(--primary);">Always On Target</div>
+                            <p class="text-sm" style="color: var(--text-muted);">Catch issues before your users do</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Test View -->
+            <div id="new-test-view" class="view" style="display: none;">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold mb-2" style="font-family: 'Space Mono', monospace;">
+                        Configure New Test
+                    </h1>
+                    <p style="color: var(--text-muted);">Set up an AI-powered UX test for your application</p>
+                </div>
+
+                <div class="card max-w-3xl">
+                    <form id="new-test-form" onsubmit="runTest(event)">
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block mb-2 font-semibold">Test Name</label>
+                                <input type="text" placeholder="e.g., Mobile Signup Flow - iOS" required>
+                            </div>
+
+                            <div>
+                                <label class="block mb-2 font-semibold">Target URL</label>
+                                <input type="url" placeholder="https://staging.example.com" required>
+                            </div>
+
+                            <div>
+                                <label class="block mb-2 font-semibold">Test Scenario</label>
+                                <select required>
+                                    <option value="">Select a test scenario...</option>
+                                    <option value="signup">Complete Signup Flow</option>
+                                    <option value="login">Login Flow</option>
+                                    <option value="document-upload">Document Upload</option>
+                                    <option value="profile-creation">Profile Creation</option>
+                                    <option value="checkout">Checkout Process</option>
+                                    <option value="custom">Custom Flow</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block mb-2 font-semibold">Device Configuration</label>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <select required>
+                                        <option value="">Device Type</option>
+                                        <option value="mobile-ios">Mobile - iOS</option>
+                                        <option value="mobile-android">Mobile - Android</option>
+                                        <option value="tablet">Tablet</option>
+                                        <option value="desktop">Desktop</option>
+                                    </select>
+                                    <select required>
+                                        <option value="">Browser</option>
+                                        <option value="safari">Safari</option>
+                                        <option value="chrome">Chrome</option>
+                                        <option value="firefox">Firefox</option>
+                                        <option value="edge">Edge</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block mb-2 font-semibold">Network Conditions</label>
+                                <select>
+                                    <option value="default">Default (Fast WiFi)</option>
+                                    <option value="3g">Slow 3G</option>
+                                    <option value="4g">4G</option>
+                                    <option value="offline-test">Offline/Intermittent</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block mb-2 font-semibold">Language/Locale</label>
+                                <select>
+                                    <option value="en-US">English (US)</option>
+                                    <option value="es-ES">Spanish</option>
+                                    <option value="fr-FR">French</option>
+                                    <option value="de-DE">German</option>
+                                    <option value="zh-CN">Chinese</option>
+                                    <option value="ja-JP">Japanese</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block mb-2 font-semibold">User Persona</label>
+                                <select>
+                                    <option value="confused">Confused First-Timer</option>
+                                    <option value="tech-savvy">Tech-Savvy User</option>
+                                    <option value="impatient">Impatient User</option>
+                                    <option value="thorough">Thorough User</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block mb-2 font-semibold">Alert Destination</label>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <select>
+                                        <option value="slack">Slack</option>
+                                        <option value="teams">Microsoft Teams</option>
+                                        <option value="email">Email</option>
+                                    </select>
+                                    <input type="text" placeholder="Channel/Email">
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <button type="submit" class="btn-primary flex-1">
+                                    <span style="position: relative; z-index: 1;">Start Test Run</span>
+                                </button>
+                                <button type="button" class="btn-secondary" onclick="switchTab('dashboard')">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- History View -->
+            <div id="history-view" class="view" style="display: none;">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold mb-2" style="font-family: 'Space Mono', monospace;">
+                        Test History
+                    </h1>
+                    <p style="color: var(--text-muted);">View all previous test runs and their results</p>
+                </div>
+
+                <!-- Filters -->
+                <div class="card mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <select>
+                            <option value="">All Statuses</option>
+                            <option value="passed">Passed</option>
+                            <option value="failed">Failed</option>
+                            <option value="running">Running</option>
+                        </select>
+                        <select>
+                            <option value="">All Devices</option>
+                            <option value="mobile">Mobile</option>
+                            <option value="tablet">Tablet</option>
+                            <option value="desktop">Desktop</option>
+                        </select>
+                        <select>
+                            <option value="">All Scenarios</option>
+                            <option value="signup">Signup Flow</option>
+                            <option value="login">Login Flow</option>
+                            <option value="upload">Document Upload</option>
+                        </select>
+                        <input type="date" placeholder="Date">
+                    </div>
+                </div>
+
+                <!-- History List -->
+                <div class="space-y-4">
+                    <div class="card">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="status-badge status-failed">Failed</div>
+                                    <h3 class="font-bold text-lg">Document Upload Test - Android Chrome</h3>
+                                </div>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4" style="color: var(--text-muted);">
+                                    <div>
+                                        <div class="font-semibold" style="color: var(--text);">Run Date</div>
+                                        <div>Feb 7, 2026 14:30</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold" style="color: var(--text);">Duration</div>
+                                        <div>3m 42s</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold" style="color: var(--text);">Issues Found</div>
+                                        <div class="severity-p0">3 (P0: 1, P1: 2)</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold" style="color: var(--text);">Device</div>
+                                        <div>Android Chrome</div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="btn-secondary" onclick="viewTestDetails('test-2')">View Report</button>
+                                    <button class="btn-secondary" onclick="rerunTest('test-2')">Rerun Test</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="status-badge status-passed">Passed</div>
+                                    <h3 class="font-bold text-lg">Mobile Signup Flow - iOS Safari</h3>
+                                </div>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4" style="color: var(--text-muted);">
+                                    <div>
+                                        <div class="font-semibold" style="color: var(--text);">Run Date</div>
+                                        <div>Feb 7, 2026 13:15</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold" style="color: var(--text);">Duration</div>
+                                        <div>2m 18s</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold" style="color: var(--text);">Issues Found</div>
+                                        <div style="color: var(--success);">0</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold" style="color: var(--text);">Device</div>
+                                        <div>iOS Safari</div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="btn-secondary" onclick="viewTestDetails('test-1')">View Report</button>
+                                    <button class="btn-secondary" onclick="rerunTest('test-1')">Rerun Test</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="status-badge status-failed">Failed</div>
+                                    <h3 class="font-bold text-lg">Checkout Flow - Slow 3G Network</h3>
+                                </div>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4" style="color: var(--text-muted);">
+                                    <div>
+                                        <div class="font-semibold" style="color: var(--text);">Run Date</div>
+                                        <div>Feb 6, 2026 16:45</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold" style="color: var(--text);">Duration</div>
+                                        <div>5m 12s</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold" style="color: var(--text);">Issues Found</div>
+                                        <div class="severity-p1">2 (P1: 2)</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold" style="color: var(--text);">Device</div>
+                                        <div>Mobile Chrome (3G)</div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="btn-secondary" onclick="viewTestDetails('test-3')">View Report</button>
+                                    <button class="btn-secondary" onclick="rerunTest('test-3')">Rerun Test</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Scenarios View -->
+            <div id="scenarios-view" class="view" style="display: none;">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold mb-2" style="font-family: 'Space Mono', monospace;">
+                        Available Test Scenarios
+                    </h1>
+                    <p style="color: var(--text-muted);">Pre-configured test flows ready to run</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card test-scenario" onclick="selectScenario('signup')">
+                        <div class="flex items-start justify-between mb-3">
+                            <h3 class="text-xl font-bold">🚀 Complete Signup Flow</h3>
+                            <span class="text-sm px-3 py-1 rounded-full" style="background: rgba(0, 255, 136, 0.2); color: var(--success);">Popular</span>
+                        </div>
+                        <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                            Tests the complete user registration journey from landing page to account creation
+                        </p>
+                        <div class="text-sm" style="color: var(--text-muted);">
+                            <div class="mb-1">✓ Form validation</div>
+                            <div class="mb-1">✓ Email verification flow</div>
+                            <div class="mb-1">✓ Password requirements</div>
+                            <div>✓ Success confirmation</div>
+                        </div>
+                    </div>
+
+                    <div class="card test-scenario" onclick="selectScenario('login')">
+                        <div class="flex items-start justify-between mb-3">
+                            <h3 class="text-xl font-bold">🔐 Login Flow</h3>
+                        </div>
+                        <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                            Validates authentication process and error handling
+                        </p>
+                        <div class="text-sm" style="color: var(--text-muted);">
+                            <div class="mb-1">✓ Credential validation</div>
+                            <div class="mb-1">✓ "Forgot password" flow</div>
+                            <div class="mb-1">✓ Session management</div>
+                            <div>✓ Error messages</div>
+                        </div>
+                    </div>
+
+                    <div class="card test-scenario" onclick="selectScenario('upload')">
+                        <div class="flex items-start justify-between mb-3">
+                            <h3 class="text-xl font-bold">📄 Document Upload</h3>
+                            <span class="text-sm px-3 py-1 rounded-full" style="background: rgba(255, 170, 0, 0.2); color: var(--warning);">Complex</span>
+                        </div>
+                        <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                            Tests file upload functionality across different file types and sizes
+                        </p>
+                        <div class="text-sm" style="color: var(--text-muted);">
+                            <div class="mb-1">✓ File type validation</div>
+                            <div class="mb-1">✓ Size limits</div>
+                            <div class="mb-1">✓ Upload progress</div>
+                            <div>✓ Error handling</div>
+                        </div>
+                    </div>
+
+                    <div class="card test-scenario" onclick="selectScenario('profile')">
+                        <div class="flex items-start justify-between mb-3">
+                            <h3 class="text-xl font-bold">👤 Profile Creation</h3>
+                        </div>
+                        <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                            Validates user profile setup and customization options
+                        </p>
+                        <div class="text-sm" style="color: var(--text-muted);">
+                            <div class="mb-1">✓ Personal information</div>
+                            <div class="mb-1">✓ Avatar upload</div>
+                            <div class="mb-1">✓ Preferences settings</div>
+                            <div>✓ Save functionality</div>
+                        </div>
+                    </div>
+
+                    <div class="card test-scenario" onclick="selectScenario('checkout')">
+                        <div class="flex items-start justify-between mb-3">
+                            <h3 class="text-xl font-bold">🛒 Checkout Process</h3>
+                            <span class="text-sm px-3 py-1 rounded-full" style="background: rgba(255, 170, 0, 0.2); color: var(--warning);">Complex</span>
+                        </div>
+                        <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                            Complete e-commerce checkout journey testing
+                        </p>
+                        <div class="text-sm" style="color: var(--text-muted);">
+                            <div class="mb-1">✓ Cart management</div>
+                            <div class="mb-1">✓ Shipping information</div>
+                            <div class="mb-1">✓ Payment processing</div>
+                            <div>✓ Order confirmation</div>
+                        </div>
+                    </div>
+
+                    <div class="card test-scenario" onclick="selectScenario('custom')">
+                        <div class="flex items-start justify-between mb-3">
+                            <h3 class="text-xl font-bold">⚙️ Custom Flow</h3>
+                        </div>
+                        <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                            Create your own test scenario with specific steps
+                        </p>
+                        <div class="text-sm" style="color: var(--text-muted);">
+                            <div class="mb-1">✓ Define custom steps</div>
+                            <div class="mb-1">✓ Set validation rules</div>
+                            <div class="mb-1">✓ Configure assertions</div>
+                            <div>✓ Save as template</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- New Test Modal -->
+    <div id="new-test-modal" class="modal">
+        <div class="modal-content">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold" style="font-family: 'Space Mono', monospace;">Quick Test Setup</h2>
+                <button onclick="closeModal()" style="color: var(--text-muted); font-size: 1.5rem; cursor: pointer; background: none; border: none;">&times;</button>
+            </div>
+            <form onsubmit="startQuickTest(event)">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block mb-2 font-semibold">Test Scenario</label>
+                        <select id="quick-scenario" required>
+                            <option value="">Select scenario...</option>
+                            <option value="signup">Complete Signup Flow</option>
+                            <option value="login">Login Flow</option>
+                            <option value="upload">Document Upload</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block mb-2 font-semibold">Target URL</label>
+                        <input type="url" id="quick-url" placeholder="https://staging.example.com" required>
+                    </div>
+                    <div class="flex gap-4">
+                        <button type="submit" class="btn-primary flex-1">
+                            <span style="position: relative; z-index: 1;">Run Test</span>
+                        </button>
+                        <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quick Test Confirmation Modal -->
+    <div id="quick-test-modal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold" style="font-family: 'Space Mono', monospace;">🚀 Quick Test</h2>
+                <button onclick="closeQuickTestModal()" style="color: var(--text-muted); font-size: 1.5rem; cursor: pointer; background: none; border: none;">&times;</button>
+            </div>
+            
+            <div class="mb-6">
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+                    Run the most recent test configuration again?
+                </p>
+                
+                <div class="card" style="background: var(--surface-light); margin-bottom: 1.5rem;">
+                    <h3 class="font-bold mb-3" style="color: var(--primary);">Most Recent Test</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span style="color: var(--text-muted);">Test Name:</span>
+                            <span class="font-semibold" id="qt-test-name">Mobile Signup Flow - iOS Safari</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span style="color: var(--text-muted);">URL:</span>
+                            <span class="font-semibold" id="qt-url">https://staging.example.com</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span style="color: var(--text-muted);">Scenario:</span>
+                            <span class="font-semibold" id="qt-scenario">Complete Signup Flow</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span style="color: var(--text-muted);">Device:</span>
+                            <span class="font-semibold" id="qt-device">Mobile (iPhone 14)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span style="color: var(--text-muted);">Browser:</span>
+                            <span class="font-semibold" id="qt-browser">Safari</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span style="color: var(--text-muted);">Last Run:</span>
+                            <span class="font-semibold" id="qt-last-run">2 minutes ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-4">
+                <button class="btn-primary flex-1" onclick="confirmQuickTest()">
+                    <span style="position: relative; z-index: 1;">✓ Run Test</span>
+                </button>
+                <button class="btn-secondary" onclick="closeQuickTestModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Details Modal -->
+    <div id="test-details-modal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold" style="font-family: 'Space Mono', monospace;">Test Report</h2>
+                <button onclick="closeDetailsModal()" style="color: var(--text-muted); font-size: 1.5rem; cursor: pointer; background: none; border: none;">&times;</button>
+            </div>
+            
+            <div id="test-details-content">
+                <!-- Content will be dynamically loaded -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
