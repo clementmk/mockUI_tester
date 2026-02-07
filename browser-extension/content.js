@@ -94,7 +94,7 @@ const setupButtonListeners = (button) => {
     });
 };
 
-// Make button draggable
+// button draggable
 const makeDraggable = (button) => {
     let isDragging = false;
     let currentX;
