@@ -3,6 +3,7 @@
 import { switchTab } from './navigation.js';
 import { closeModal, closeDetailsModal } from './modals.js';
 import { showNewTestModal } from './modals.js';
+// import { API } from './api.js';
 
 export function quickTest(scenario) {
     const scenarioSelect = document.getElementById('quick-scenario');
@@ -52,28 +53,42 @@ export function startQuickTest(e) {
 }
 
 export function runTest(e) {
-    e.preventDefault();
+    const testType = document.getElementById("new-test-form-scenario").value;
+
+    fetch('http://localhost:8000/api/test/' + testType)
+    .then(response => response.json())
+    .then(data => console.log(data));
+
+    console.log('Test started');
+    alert('Test started!');
+
+    // console.log({
+    //     name: document.getElementById('name').value,
+    //     url: document.getElementById('url').value,
+    //     scenario: document.getElementById('scenario').value,
+    // })
+    // e.preventDefault();
     
-    const form = e.target;
-    const formData = new FormData(form);
+    // const form = e.target;
+    // const formData = new FormData(form);
     
-    //test configuration object
-    const testConfig = {
-        name: formData.get('name'),
-        url: formData.get('url'),
-        scenario: formData.get('scenario'),
-        device: formData.get('device'),
-        browser: formData.get('browser'),
-        network: formData.get('network'),
-        locale: formData.get('locale'),
-        persona: formData.get('persona'),
-        alert: formData.get('alert')
-    };
+    // //test configuration object
+    // const testConfig = {
+    //     name: formData.get('name'),
+    //     url: formData.get('url'),
+    //     scenario: formData.get('scenario'),
+    //     device: formData.get('device'),
+    //     browser: formData.get('browser'),
+    //     network: formData.get('network'),
+    //     locale: formData.get('locale'),
+    //     persona: formData.get('persona'),
+    //     alert: formData.get('alert')
+    // };
     
-    console.log('Test configuration:', testConfig);
+    // console.log('Test configuration:', testConfig);
     
-    alert('Test started! You can monitor progress in the dashboard.\n\nThis will integrate with your backend API.');
-    switchTab('dashboard');
+    // alert('Test started! You can monitor progress in the dashboard.\n\nThis will integrate with your backend API.');
+    // switchTab('dashboard');
 }
 
 export function rerunTest(testId) {

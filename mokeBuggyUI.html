@@ -447,13 +447,6 @@
         <div class="helper-text">Must be at least 8 characters</div>
       </div>
 
-      <div class="form-group">
-        <label for="field4">label_4</label>
-        <!-- BUG: Password shown in plain text (type="text" instead of "password") -->
-        <input type="text" id="field4" name="field4" placeholder="Confirm your password" required>
-        <!-- BUG: Low contrast helper text -->
-        <div class="helper-text">Passwords must match</div>
-      </div>
 
       <!-- BUG: reCAPTCHA integration -->
       <div class="recaptcha-container">
@@ -498,7 +491,7 @@
     console.log('='.repeat(80));
     console.log('');
     console.log('📋 BUG LIST:');
-    console.log('1. ❌ Ambiguous Labels: "label_1", "label_2", "label_3", "label_4" instead of descriptive names');
+    console.log('1. ❌ Ambiguous Labels: "label_1", "label_2", "label_3" instead of descriptive names');
     console.log('2. ❌ Password Visibility: Password field uses type="text" (visible in plain text)');
     console.log('3. ❌ Low Contrast Text: Helper text color #cccccc on white (WCAG violation)');
     console.log('4. ❌ Fake Security Indicators: Claims "100% Secure" but page is HTTP (not HTTPS)');
@@ -509,7 +502,6 @@
     console.log('9. ❌ Forgot Password: Returns Error 500 (server error simulation)');
     console.log('10. ❌ Login Button: Slow response - takes 8 seconds to process');
     console.log('11. ❌ Form Validation: No client-side validation implemented');
-    console.log('    - Passwords can mismatch (field3 ≠ field4)');
     console.log('    - Empty fields accepted');
     console.log('    - Invalid email format accepted');
     console.log('    - Weak passwords (< 8 chars) accepted');
@@ -558,7 +550,6 @@
       const field1 = document.getElementById('field1').value;
       const field2 = document.getElementById('field2').value;
       const field3 = document.getElementById('field3').value;
-      const field4 = document.getElementById('field4').value;
 
       console.log('='.repeat(60));
       console.log('🐛 BUG: Login - Slow Response + No Validation');
@@ -566,7 +557,6 @@
       console.log(`Field 1 (label_1 - Username): ${field1}`);
       console.log(`Field 2 (label_2 - Email): ${field2}`);
       console.log(`Field 3 (label_3 - Password): ${field3}`);
-      console.log(`Field 4 (label_4 - Confirm Password): ${field4}`);
 
       // BUG: No validation - checking what SHOULD be validated but isn't
       console.log('');
@@ -574,14 +564,8 @@
 
       let validationIssues = 0;
 
-      // Check password match
-      if (field3 !== field4) {
-        console.error('❌ BUG: Passwords do not match! (Should show error but doesn\'t)');
-        validationIssues++;
-      }
-
       // Check empty fields
-      if (!field1 || !field2 || !field3 || !field4) {
+      if (!field1 || !field2 || !field3) {
         console.error('❌ BUG: Empty fields detected! (Should require all fields)');
         validationIssues++;
       }
@@ -660,8 +644,8 @@
 
     // BUG: Contradicting UI signals simulation
     setTimeout(() => {
-      console.log('🐛 BUG: Contradicting UI - Fields labeled as "label_1", "label_2", "label_3", "label_4"');
-      console.log('❌ But placeholders say "username", "email", "password", "confirm password"');
+      console.log('🐛 BUG: Contradicting UI - Fields labeled as "label_1", "label_2", "label_3"');
+      console.log('❌ But placeholders say "username", "email", "password"');
       console.log('❌ This creates confusion for AI agents trying to understand the form');
     }, 1000);
   </script>
