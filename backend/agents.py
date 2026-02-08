@@ -4,6 +4,10 @@ import json
 import os
 from datetime import datetime
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from PIL import Image
 
 from openai import OpenAI
@@ -29,10 +33,11 @@ TASKS = {
 	"signup": (
 		f"1. Go to {BASE_URL}\n"
 		"2. Find the sign-up/register form or link on the page and click it\n"
-		"3. Fill in the registration form with a random name, email, and password\n"
-		"4. Click the sign-up/register button\n"
-		"5. Observe the result - did registration succeed or fail?\n"
-		"6. Return what happened at each step"
+		"3. If you cannot find a sign-up/register form or link after checking the page, STOP and report that no signup option was found\n"
+		"4. Fill in the registration form with a random name, email, and password\n"
+		"5. Click the sign-up/register button\n"
+		"6. Observe the result - did registration succeed or fail?\n"
+		"7. Whether it succeeded or failed, STOP immediately and return what happened at each step. Do NOT retry or try alternative approaches"
 	),
 	"forget-password": (
 		f"1. Go to {BASE_URL}\n"
@@ -52,10 +57,7 @@ TASKS = {
 	),
 }
 
-# --- Controller ---
-
 controller = Controller()
-
 
 @controller.action("Get 2FA code from authenticator app")
 async def get_2fa_code():
@@ -93,16 +95,14 @@ async def solve_recaptcha(browser_session: BrowserSession):
 	msg = result.get("result", {}).get("value", "unknown result")
 	return ActionResult(extracted_content=f"reCAPTCHA result: {msg}")
 
-
-# --- Browser Agent ---
-
+# --- Test Agent ---
 async def run_browser_task(task):
 	"""Run a browser-use task and return (output_dir, output_text)."""
 	if task not in TASKS:
 		raise ValueError(f"Invalid task '{task}'. Choose from: {', '.join(TASKS.keys())}")
 
 	llm = ChatOpenAI(
-		api_key="api_key",
+		api_key=os.getenv("BYTEDANCE_API_KEY"),
 		base_url="https://ark.ap-southeast.bytepluses.com/api/v3",
 		model="seed-1-8-251228",
 	)
@@ -122,11 +122,11 @@ async def run_browser_task(task):
 		task=TASKS[task],
 		controller=controller,
 		max_failures=1,
+		max_steps=15,
 	)
 
 	result = await agent.run()
 
-	# Create output folder
 	timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 	output_dir = f"results/{task}_{timestamp}"
 	screenshots_dir = f"{output_dir}/screenshots"
@@ -139,7 +139,6 @@ async def run_browser_task(task):
 			with open(f"{screenshots_dir}/step_{i}.png", "wb") as f:
 				f.write(img_data)
 
-	# Structured output
 	try:
 		if result and result.structured_output:
 			structured = json.dumps(result.structured_output.model_dump(), indent=2, default=str)
@@ -197,7 +196,7 @@ async def generate_report(topic, task_result, output_dir):
 	"""Generate a QA report and save it to the output_dir."""
 	client = OpenAI(
 		base_url="https://openrouter.ai/api/v1",
-		api_key="api_key",
+		api_key=os.getenv("OPENROUTER_API_KEY"),
 	)
 
 	system_prompt = """You are a Senior QA Engineer writing a test report for your team after running automated UI tests.
@@ -283,7 +282,6 @@ CRITICAL:
 Return the result in ["fail" or "pass" state, html output]
 """
 
-	# Tell LLM to use placeholder tags for screenshots
 	response = client.chat.completions.create(
 		model="google/gemini-3-flash-preview",
 		messages=[
@@ -328,18 +326,18 @@ Return the result in ["fail" or "pass" state, html output]
 	return state, html_output
 
 
-# --- Slack Agent ---
-
-def send_to_slack(state, file_path, token="api_token", channel_id="C0ADRJFT6A0"):
+def send_to_slack(state, file_path, token=None, channel_id=None):
+	token = token or os.getenv("SLACK_TOKEN")
+	channel_id = channel_id or os.getenv("SLACK_CHANNEL_ID")
 	"""Send report to Slack."""
 	client = WebClient(token)
 
 	if state == "pass":
-		message_title = "Test passed!"
+		message_title = "🎉 Test passed! 🎉"
 	elif state == "fail":
-		message_title = "Test failed!"
+		message_title = "🚨 Test failed! 🚨"
 	else:
-		message_title = "Test unknown!"
+		message_title = "🤷‍♀️ Test unknown! 🤷‍♀️"
 
 	try:
 		client.files_upload_v2(
