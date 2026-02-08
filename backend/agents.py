@@ -26,7 +26,7 @@ TASKS = {
 		f"1. Go to {BASE_URL}\n"
 		"2. Find the login form on the page\n"
 		"3. Enter email: testuser@example.com and password: TestPass123!\n"
-		"4. Click the login/submit button\n"
+		"4. Click the login/submit button. Solve any reCAPTCHA if present\n"
 		"5. Observe the result - did login succeed or fail?\n"
 		"6. Return what happened at each step"
 	),
@@ -112,7 +112,7 @@ async def run_browser_task(task):
 		browser_profile=BrowserProfile(
 			viewport={"width": 390, "height": 844},
 			user_agent="Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
-			device_scale_factor=3.0,
+			device_scale_factor=2.0,
 		),
 	)
 
@@ -121,7 +121,7 @@ async def run_browser_task(task):
 		llm=llm,
 		task=TASKS[task],
 		controller=controller,
-		max_failures=1,
+		max_failures=3,
 		max_steps=15,
 	)
 
@@ -244,7 +244,7 @@ Write your report with these sections, but make them flow naturally:
    - Make sure the detailed steps are clear and easily reproducible
 
 4. **Recommendations** (practical advice)
-   - List fixes or improvements in order of priority
+   - List fixes or improvements for UI in order of priority
    - Be specific - "Add validation message below email field" not "improve validation"
    - Suggest why each change would help users
    - Mention anything we should watch out for in future tests
@@ -326,7 +326,7 @@ Return the result in ["fail" or "pass" state, html output]
 	return state, html_output
 
 
-def send_to_slack(state, file_path, token=None, channel_id=None):
+def send_to_slack(run_name, state, file_path, token=None, channel_id=None):
 	token = token or os.getenv("SLACK_TOKEN")
 	channel_id = channel_id or os.getenv("SLACK_CHANNEL_ID")
 	"""Send report to Slack."""
@@ -344,7 +344,7 @@ def send_to_slack(state, file_path, token=None, channel_id=None):
 			file=file_path,
 			title="Report",
 			channel=channel_id,
-			initial_comment=f"{message_title}\n\nView report here",
+			initial_comment=f"{message_title}\n\nView report here for {run_name}",
 		)
 		print("Slack message sent")
 	except SlackApiError as e:

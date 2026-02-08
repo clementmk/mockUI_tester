@@ -1,13 +1,13 @@
 # ATester - Autonomous Mystery Shopper
 
-AI-powered UX testing that detects friction before users do.
+AI-powered UI/UX testing that detects friction before users do.
 
 ## Quick Start
 
 ### Requirements
 
 - python 3.11
-- vision enable llm (used to conduct the testing)
+- vision enabled llm (used to conduct the testing)
    - currently using `seed-1-8-251228` from `bytedance`
 - chat llm (used to generate the report)
    - currently using `google/gemini-3-flash-preview` from `openrouter`
@@ -28,7 +28,7 @@ pip install -r requirements.txt
 
 ### Start servers
 
-1. **Start the FE and Testing servers:**
+1. **Start the tested website and Testing dashboard:**
 ```bash
 python server.py
 ```
@@ -41,10 +41,10 @@ python -m fastapi dev backend/main.py
 3. **Open your browser:**
 - Navigate to `http://localhost:8001`
 - Click on `New Test`
-- Enter `Test Name` and `Target Url` (target url is ignored by the backend server)
+- Enter `Test Name` and `Target Url` (target url is currently ignored by the backend server)
 - Select a `Test Scenario`
 - Click `Start Run`
-- Result will be sent to the configured slack channel or it can be found at `/results` folder 
+- Result will be sent to the configured slack channel or it can be found at `/results` folder
 
 ## Project Structure
 

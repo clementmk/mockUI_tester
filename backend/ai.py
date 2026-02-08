@@ -18,7 +18,7 @@ async def main(task):
 
 	# 3. Send to Slack
 	print("\nSending to Slack...")
-	send_to_slack(state, f"{output_dir}/report.html")
+	send_to_slack(task, state, f"{output_dir}/report.html")
 
 	return {"task": task, "state": state, "report_dir": output_dir}
 
